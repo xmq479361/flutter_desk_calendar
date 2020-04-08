@@ -47,8 +47,8 @@ class _ExamplePageState extends State<ExamplePage>
                 child: NotificationListener<QCalNotification>(
                     onNotification: (notification) {
                       print(
-                          "QCalNotification: ${notification.model.focusDateTime}");
-                      focusDateTime = notification.model.focusDateTime;
+                          "QCalNotification: ${notification.model.focusedDate}");
+                      focusDateTime = notification.model.focusedDate;
                       setState(() {});
                       return true;
                     },

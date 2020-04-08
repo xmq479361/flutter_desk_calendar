@@ -43,7 +43,7 @@ class QCalculator {
   static Date calcFocusDateByOffset(
       Offset offset, Size size, QCalHolder model, List<Week> weeks) {
     int indexDay = offset.dx ~/ (size.width / DAYS_PERWEEK);
-    int indexWeek = getFocusIndex(model.focusDateTime, weeks);
+    int indexWeek = getFocusIndex(model.focusedDate, weeks);
     if (model.mode != Mode.WEEK)
       indexWeek = offset.dy ~/ (size.height / WEEK_IN_MONTH);
     return weeks[indexWeek].dates[indexDay];
@@ -65,7 +65,7 @@ class QCalculator {
   static Date calcFocusDate(
       Offset offset, Size size, QCalHolder model, List<Week> weeks) {
     int indexDay = offset.dx ~/ (size.width / DAYS_PERWEEK);
-    int indexWeek = getFocusIndex(model.focusDateTime, weeks);
+    int indexWeek = getFocusIndex(model.focusedDate, weeks);
     switch (model.mode) {
       case Mode.WEEK:
         break;

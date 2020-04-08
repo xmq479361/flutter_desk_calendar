@@ -7,6 +7,7 @@ import 'QCalModel.dart';
 import 'QCalculator.dart';
 
 const double topOffset = 5;
+const double circleSizeOfWith = 0.55;
 
 ///视图渲染器
 class QCalendarRender {
@@ -21,7 +22,7 @@ class QCalendarRender {
     canvas.save();
     // 获取焦点所在周索引位置
     int focusIndexOfWeek =
-        QCalculator.getFocusIndex(model.focusDateTime, monthDate);
+        QCalculator.getFocusIndex(model.focusedDate, monthDate);
     drawRect(canvas, size, paintWeekBgDef);
     double itemHeight = max(size.height / WEEK_IN_MONTH, model.minHeight);
     double offsetTop = min(0.0, size.height - model.centerHeight);
@@ -104,7 +105,7 @@ class QCalendarRender {
   TextStyle dateTextStyle = TextStyle(color: Colors.white);
 
   double circleSize(Size size) {
-    return size.width * 0.55;
+    return size.width * circleSizeOfWith;
   }
 
   double topMargin() {
@@ -134,7 +135,7 @@ class QCalendarRender {
 
   /// 日期对应视图渲染
   void renderDate(Canvas canvas, Size size, QCalHolder model, Date date) {
-    if (model.focusDateTime == date) {
+    if (model.focusedDate == date) {
       final double cirSize = circleSize(size);
       dateTextPainter.text = createTextSpan(date, model, isFocus: true);
       dateTextPainter.layout();

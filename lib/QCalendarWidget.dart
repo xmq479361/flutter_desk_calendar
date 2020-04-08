@@ -15,7 +15,13 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   QCalendarRender render;
 
   rebuildView() {
-    setState(() {});
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _scrollController ?? dispose();
+    super.dispose();
   }
 
   @override
@@ -39,7 +45,8 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   }) {
     this._model = model ?? QCalHolder(mode: Mode.WEEK);
     return SliverPersistentHeader(
-      delegate: QCalSliverHeaderDelegate(this, render: render ?? QCalendarRender()),
+      delegate:
+          QCalSliverHeaderDelegate(this, render: render ?? QCalendarRender()),
       pinned: pinned,
     );
   }
@@ -80,9 +87,10 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   /// 延时检查 是否模式切换
   Future _scroll(offset) async {
     print("_scroll: $offset");
-    await Future.delayed(Duration(milliseconds: 20), (){
-      if(!mounted) return;
-      _scrollController.animateTo(offset, duration: Duration(milliseconds: 60), curve: Curves.linear);
+    await Future.delayed(Duration(milliseconds: 20), () {
+      if (!mounted) return;
+      _scrollController.animateTo(offset,
+          duration: Duration(milliseconds: 60), curve: Curves.linear);
     });
   }
 
@@ -104,7 +112,7 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
     //     "${offsetsScroll}::: offset2Top: ${offset2Top}, offset2Center: ${offset2Center}, offset2Detail: ${offset2Detail} == ${mode} ");
     if (_model.mode != mode) {
       _model.mode = mode;
-      setState(() {});
+      rebuildView();
     }
     // 如果已经一步滑动 超出CalendarWidget 高度（fullHeight）
     return metrics.extentBefore <= offsetsScroll;
@@ -112,8 +120,6 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
 }
 
 class QCalSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
-  // QCalHolder model;
-  // PageController _pageController;
   QCalendarRender render;
   QCalendarWidgetMixin container;
 

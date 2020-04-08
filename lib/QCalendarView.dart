@@ -27,13 +27,14 @@ class _QCalendarViewState extends State<QCalendarView> {
     return GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTapUp: (details) {
-          print("  >>>onTapUp ${containerKey.currentContext.size}. ${details.localPosition}");
+          print(
+              "  >>>onTapUp ${containerKey.currentContext.size}. ${details.localPosition}");
           Date focusDate = QCalculator.calcFocusDateByOffset(
               details.localPosition,
               containerKey.currentContext.size,
               widget.mModel,
               QCalculator.generate(widget.mModel.getDateTime(widget.pos)));
-          if (widget.mModel.focusDateTime.isEquals(focusDate)) return;
+          if (widget.mModel.focusedDate.isEquals(focusDate)) return;
           widget.mModel.focusDate(context, focusDate);
           widget.rebuildView();
         },
@@ -57,9 +58,7 @@ class QCalendarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (render != null) {
-      render.render(canvas, size, mModel, QCalculator.generate(mModel.getDateTime(pos)));
-    }
+    render.render(canvas, size, mModel, QCalculator.generate(mModel.getDateTime(pos)));
   }
 
   @override
