@@ -12,6 +12,8 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   final GlobalKey containerKey = GlobalKey();
   QCalHolder _model;
   ScrollController _scrollController;
+  QCalendarRender render;
+
   rebuildView() {
     setState(() {});
   }
@@ -19,12 +21,10 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   @override
   void initState() {
     super.initState();
-    if (_model == null) _model = QCalHolder(mode: Mode.WEEK);
     SchedulerBinding.instance.addPostFrameCallback((_) {
       RenderBox box = containerKey.currentContext.findRenderObject();
       Offset offset = box.localToGlobal(Offset.zero);
-      print(
-          "CalendarWidgetMixin endOfFrame: ${box.size},  $offset");
+      print("CalendarWidgetMixin endOfFrame: ${box.size},  $offset");
       _model.fullHeight = box.size.height;
       _model.minHeight = max(45.0, box.size.height / 3 / WEEK_IN_MONTH);
       _model.centerHeight = _model.minHeight * WEEK_IN_MONTH;
@@ -33,13 +33,13 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
     });
   }
 
-  sliverHeader({QCalHolder model, pinned = true, QCalendarRender render}) {
-    if (model == null) model = _model;
-    this._model = model;
-    if (render == null) render = QCalendarRender();
-    // print("CalendarWidgetMixin sliverHeader ${model}");
+  sliverHeader({
+    QCalHolder model,
+    pinned = true,
+  }) {
+    this._model = model ?? QCalHolder(mode: Mode.WEEK);
     return SliverPersistentHeader(
-      delegate: QCalSliverHeaderDelegate(this, render: render),
+      delegate: QCalSliverHeaderDelegate(this, render: render ?? QCalendarRender()),
       pinned: pinned,
     );
   }
@@ -78,24 +78,22 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   }
 
   /// 延时检查 是否模式切换
-  Timer _timer;
-  _scroll(offset) {
+  Future _scroll(offset) async {
     print("_scroll: $offset");
-    if (_timer != null) _timer.cancel();
-    _timer = Timer(Duration(milliseconds: 20), () {
-      _scrollController.animateTo(offset,
-          duration: Duration(milliseconds: 60), curve: Curves.linear);
+    await Future.delayed(Duration(milliseconds: 20), (){
+      if(!mounted) return;
+      _scrollController.animateTo(offset, duration: Duration(milliseconds: 60), curve: Curves.linear);
     });
   }
 
   bool checkModifyMode(ScrollNotification notification) {
-    print('------------------------');
+//    print('------------------------');
     if (notification.depth != 0) return false;
     ScrollMetrics metrics = notification.metrics;
+    double offset2Detail = metrics.extentBefore.abs();
     double offsetsScroll = (_model.fullHeight - _model.minHeight);
     double offset2Top = (_model.fullHeight - metrics.extentBefore).abs();
     double offset2Center = (_model.centerHeight - metrics.extentBefore).abs();
-    double offset2Detail = (metrics.extentBefore).abs();
     Mode mode;
     if (offset2Top < offset2Center) {
       mode = offset2Top < offset2Detail ? Mode.WEEK : Mode.DETAIL;
@@ -118,9 +116,11 @@ class QCalSliverHeaderDelegate extends SliverPersistentHeaderDelegate {
   // PageController _pageController;
   QCalendarRender render;
   QCalendarWidgetMixin container;
+
   QCalSliverHeaderDelegate(this.container, {this.render}) {
     if (render == null) render = QCalendarRender();
   }
+
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
