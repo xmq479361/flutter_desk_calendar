@@ -4,9 +4,7 @@ import 'QCalHolder.dart';
 class QCalNotification extends Notification {
   QCalHolder model;
 
-
   QCalNotification(this.model);
-
 
   static void dispatchTo(BuildContext context, QCalHolder model) {
     dispatchFuture(context,model);

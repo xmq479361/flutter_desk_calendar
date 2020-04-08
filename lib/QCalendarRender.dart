@@ -23,42 +23,42 @@ class QCalendarRender {
       }
     }
     canvas.drawRect(
-        Rect.fromLTRB(0, 0, size.width, size.height), paintWeekBgDef);
+        Rect.fromLTRB(0.0, 0.0, size.width, size.height), paintWeekBgDef);
     double itemHeight = max(size.height / WEEK_IN_MONTH, model.minHeight);
-    double offsetTop = min(0, size.height - model.centerHeight);
-    canvas.translate(0, offsetTop - itemHeight);
+    double offsetTop = min(0.0, size.height - model.centerHeight);
+    canvas.translate(0.0, offsetTop - itemHeight);
     int firstVisibleItem = max(0, offsetTop.abs() ~/ itemHeight);
     // print(
     //     "======translate: first:${firstVisibleItem}, ${focusIndexOfWeek}, ${model.centerHeight}=${size} (${((focusIndexOfWeek - 5) * itemHeight)} :: ${offsetTop}, ${model.fullHeight}");
     // 循环绘制每周视图数据
-    canvas.translate(0, firstVisibleItem * itemHeight);
+    canvas.translate(0.0, firstVisibleItem * itemHeight);
     for (int i = firstVisibleItem; i < WEEK_IN_MONTH; i++) {
-      canvas.translate(0, itemHeight);
+      canvas.translate(0.0, itemHeight);
       if (i == focusIndexOfWeek) continue;
       Week week = monthDate[i];
       renderWeek(canvas, Size(size.width, itemHeight), model, week);
     }
 
     if (focusIndexOfWeek > -1) {
-      canvas.translate(0,
+      canvas.translate(0.0,
           max((focusIndexOfWeek - 5) * itemHeight, itemHeight - size.height));
 
       // 绘制焦点日期所在 周末数据
       Week week = monthDate[focusIndexOfWeek];
       canvas.drawRect(
-          Rect.fromLTRB(0, 0, size.width, itemHeight), paintWeekBgDef);
+          Rect.fromLTRB(0.0, 0.0, size.width, itemHeight), paintWeekBgDef);
       renderWeek(canvas, Size(size.width, itemHeight), model, week);
     }
     canvas.restore();
 
     if (model.mode == Mode.DETAIL && size.height >= model.fullHeight) {
       for (int i = firstVisibleItem; i < WEEK_IN_MONTH; i++) {
-        canvas.drawLine(Offset(0, i * itemHeight),
+        canvas.drawLine(Offset(0.0, i * itemHeight),
             Offset(size.width, i * itemHeight), paintWeekBgDetail);
       }
       double itemWidth = size.width / DAYS_PERWEEK;
       for (int i = 0; i < DAYS_PERWEEK; i++) {
-        canvas.drawLine(Offset(i * itemWidth, 0),
+        canvas.drawLine(Offset(i * itemWidth, 0.0),
             Offset(i * itemWidth, size.height), paintWeekBgDetail);
       }
     }
@@ -86,24 +86,24 @@ class QCalendarRender {
     final double itemWidth = weekSize.width / DAYS_PERWEEK;
     for (Date date in week.dates) {
       renderDate(canvas, Size(itemWidth, weekSize.height), model, date);
-      canvas.translate(itemWidth, 0);
+      canvas.translate(itemWidth, 0.0);
     }
-    canvas.translate(-weekSize.width, 0);
+    canvas.translate(-weekSize.width, 0.0);
   }
 
   final Paint dateFocusCirclePaint = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.fill
-    ..strokeWidth = 1
+    ..strokeWidth = 1.0
     ..isAntiAlias = true;
   final Paint dateTodayCirclePaint = Paint()
     ..color = Colors.white
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 1
+    ..strokeWidth = 1.0
     ..isAntiAlias = true;
   final TextPainter dateTextPainter = TextPainter()
     ..textDirection = TextDirection.ltr;
-  TextStyle dateTextStyle = TextStyle(color: Colors.black);
+  TextStyle dateTextStyle = TextStyle(color: Colors.white);
 
   double circleSize(Size size) {
     return size.width * 0.55;

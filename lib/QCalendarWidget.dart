@@ -26,7 +26,7 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
       print(
           "CalendarWidgetMixin endOfFrame: ${box.size},  $offset");
       _model.fullHeight = box.size.height;
-      _model.minHeight = max(45, box.size.height / 3 / WEEK_IN_MONTH);
+      _model.minHeight = max(45.0, box.size.height / 3 / WEEK_IN_MONTH);
       _model.centerHeight = _model.minHeight * WEEK_IN_MONTH;
       setState(() {});
       modifyMode();
@@ -82,9 +82,9 @@ mixin QCalendarWidgetMixin<T extends StatefulWidget> on State<T> {
   _scroll(offset) {
     print("_scroll: $offset");
     if (_timer != null) _timer.cancel();
-    _timer = Timer(Duration(milliseconds: 2), () {
+    _timer = Timer(Duration(milliseconds: 20), () {
       _scrollController.animateTo(offset,
-          duration: Duration(milliseconds: 50), curve: Curves.linear);
+          duration: Duration(milliseconds: 60), curve: Curves.linear);
     });
   }
 
