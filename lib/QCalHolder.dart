@@ -11,11 +11,11 @@ enum Mode { WEEK, MONTH, DETAIL }
 
 const int maxSize = 200;
 const int offsetMid = maxSize >> 1;
-
+const double ITEM_HEIGHT_DEFAULT = 50;
 class QCalHolder {
   Mode mode;
   int currPage = offsetMid;
-  double fullHeight, centerHeight, minHeight = 50;
+  double fullHeight, centerHeight = ITEM_HEIGHT_DEFAULT*WEEK_IN_MONTH, minHeight = ITEM_HEIGHT_DEFAULT;
 
   QCalHolder({this.mode = Mode.WEEK}) {
     fullHeight = window.physicalSize.height / window.devicePixelRatio;
