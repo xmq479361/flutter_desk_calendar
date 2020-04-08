@@ -9,13 +9,10 @@ class QCalNotification extends Notification {
 
 
   static void dispatchTo(BuildContext context, QCalHolder model) {
-    // QCalNotification(model).dispatch(context);
     dispatchFuture(context,model);
   }
   static Future dispatchFuture(BuildContext context, QCalHolder model) async {
-    // Future.delayed(Duration(milliseconds: 20), (){
-      QCalNotification(model).dispatch(context);
-    // });
+    QCalNotification(model).dispatch(context);
   }
 }
 

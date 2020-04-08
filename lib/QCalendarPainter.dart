@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'QCalHolder.dart';
 import 'QCalModel.dart';
 import 'QCalculator.dart';
+import 'QCalendarRender.dart';
 
 class QCalendarPainter extends CustomPainter {
   TextPainter textPainter = TextPainter()..textDirection = TextDirection.ltr;

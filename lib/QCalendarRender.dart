@@ -1,5 +1,3 @@
-library flutter_desk_calendar;
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
