@@ -4,26 +4,25 @@ import 'package:flutter/material.dart';
 
 import 'QCalHolder.dart';
 import 'QCalModel.dart';
+import 'QCalculator.dart';
 
 const double topOffset = 5;
 
 ///视图渲染器
 class QCalendarRender {
+  void drawRect(Canvas canvas, Size size, Paint paint) {
+    canvas.drawRect(
+        Rect.fromLTRB(0.0, 0.0, size.width, size.height), paintWeekBgDef);
+  }
+
   /// 渲染月视图数据
   void render(
       Canvas canvas, Size size, QCalHolder model, List<Week> monthDate) {
     canvas.save();
     // 获取焦点所在周索引位置
-    int focusIndexOfWeek = -1;
-    for (int i = 0; i < WEEK_IN_MONTH; i++) {
-      Week week = monthDate[i];
-      if (week.hasDate(model.focusDateTime)) {
-        focusIndexOfWeek = i;
-        break;
-      }
-    }
-    canvas.drawRect(
-        Rect.fromLTRB(0.0, 0.0, size.width, size.height), paintWeekBgDef);
+    int focusIndexOfWeek =
+        QCalculator.getFocusIndex(model.focusDateTime, monthDate);
+    drawRect(canvas, size, paintWeekBgDef);
     double itemHeight = max(size.height / WEEK_IN_MONTH, model.minHeight);
     double offsetTop = min(0.0, size.height - model.centerHeight);
     canvas.translate(0.0, offsetTop - itemHeight);
@@ -45,8 +44,7 @@ class QCalendarRender {
 
       // 绘制焦点日期所在 周末数据
       Week week = monthDate[focusIndexOfWeek];
-      canvas.drawRect(
-          Rect.fromLTRB(0.0, 0.0, size.width, itemHeight), paintWeekBgDef);
+      drawRect(canvas, Size(size.width, itemHeight), paintWeekBgDef);
       renderWeek(canvas, Size(size.width, itemHeight), model, week);
     }
     canvas.restore();
@@ -136,8 +134,7 @@ class QCalendarRender {
 
   /// 日期对应视图渲染
   void renderDate(Canvas canvas, Size size, QCalHolder model, Date date) {
-    // print("")
-    if (model.focusDateTime.isEquals(date)) {
+    if (model.focusDateTime == date) {
       final double cirSize = circleSize(size);
       dateTextPainter.text = createTextSpan(date, model, isFocus: true);
       dateTextPainter.layout();

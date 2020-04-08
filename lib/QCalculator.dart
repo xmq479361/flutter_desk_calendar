@@ -16,8 +16,7 @@ class QCalculator {
     for (int weekIndex = 0; weekIndex < WEEK_IN_MONTH; weekIndex++) {
       Week week = Week();
       for (int dayIndex = 0; dayIndex < DAYS_PERWEEK; dayIndex++) {
-        week.add(
-            Date.from(firstDate.add(Duration(days: weekIndex * 7 + dayIndex))));
+        week.add(Date.from(firstDate.add(Duration(days: weekIndex * 7 + dayIndex))));
       }
       monthDate.add(week);
     }
@@ -36,45 +35,37 @@ class QCalculator {
 
   /// 获取偏移周数offset后的日期
   static Date offsetWeekTo(Date baseDate, int offset) {
-    return Date.from(
-        baseDate.toDateTime().add(Duration(days: offset * DAYS_PERWEEK)));
+    return baseDate + Duration(days: offset * DAYS_PERWEEK);
+//    return Date.from(baseDate.toDateTime().add(Duration(days: offset * DAYS_PERWEEK)));
   }
 
   /// 根据当前偏移x,y轴位置，计算点击的日期
   static Date calcFocusDateByOffset(
       Offset offset, Size size, QCalHolder model, List<Week> weeks) {
-    int focusIndexOfWeek = -1;
+    int indexDay = offset.dx ~/ (size.width / DAYS_PERWEEK);
+    int indexWeek = getFocusIndex(model.focusDateTime, weeks);
+    if (model.mode != Mode.WEEK)
+      indexWeek = offset.dy ~/ (size.height / WEEK_IN_MONTH);
+    return weeks[indexWeek].dates[indexDay];
+  }
+
+  static int getFocusIndex(Date focusDate, List<Week> weeks) {
+    int focusIndexOfWeek = 0;
     for (int i = 0; i < WEEK_IN_MONTH; i++) {
       Week week = weeks[i];
-      if (week.hasDate(model.focusDateTime)) {
+      if (week.hasDate(focusDate)) {
         focusIndexOfWeek = i;
         break;
       }
     }
-    int indexDay = offset.dx ~/ (size.width / DAYS_PERWEEK);
-    int indexWeek = focusIndexOfWeek;
-    switch (model.mode) {
-      case Mode.WEEK:
-        break;
-      default:
-        indexWeek = offset.dy ~/ (size.height / WEEK_IN_MONTH);
-    }
-    return weeks[indexWeek].dates[indexDay];
+    return focusIndexOfWeek;
   }
 
   /// 根据当前偏移x,y轴位置，计算点击的日期
   static Date calcFocusDate(
       Offset offset, Size size, QCalHolder model, List<Week> weeks) {
-    int focusIndexOfWeek = 0;
-    for (int i = 0; i < WEEK_IN_MONTH; i++) {
-      Week week = weeks[i];
-      if (week.hasDate(model.focusDateTime)) {
-        focusIndexOfWeek = i;
-        break;
-      }
-    }
     int indexDay = offset.dx ~/ (size.width / DAYS_PERWEEK);
-    int indexWeek = focusIndexOfWeek;
+    int indexWeek = getFocusIndex(model.focusDateTime, weeks);
     switch (model.mode) {
       case Mode.WEEK:
         break;

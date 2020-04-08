@@ -2,13 +2,18 @@ const int MAX_MONTH = 12;
 const int DAYS_PERWEEK = 7;
 const int WEEK_IN_MONTH = 6;
 const int firstDayInWeek = DateTime.monday;
+final Date _today = Date.from(DateTime.now());
 
 class Date {
-  int year, month, date;
+  final int year, month, date;
+  bool today;
 
   DateTime toDateTime() => DateTime(year, month, date);
 
-  Date(this.year, this.month, this.date);
+  Date(this.year, this.month, this.date) {
+    today = isEquals(_today);
+  }
+
   Date.from(DateTime dateTime)
       : this(dateTime.year, dateTime.month, dateTime.day);
 
@@ -17,27 +22,33 @@ class Date {
 
   bool isBefore(Date date) =>
       date == null || toDateTime().isBefore(date.toDateTime());
+
   bool isAfter(Date date) =>
       date == null || toDateTime().isAfter(date.toDateTime());
+
   bool isEquals(Date dates) =>
       dates != null &&
-      date == dates.date &&
-      month == dates.month &&
-      year == dates.year;
+          date == dates.date &&
+          month == dates.month &&
+          year == dates.year;
 
-  bool isToday() => isEquals(Date.from(DateTime.now()));
+  bool isToday() => today;
+
+  bool operator ==(dynamic dates) =>
+      dates != null && dates is Date &&
+          date == dates.date &&
+          month == dates.month &&
+          year == dates.year;
+
+  Date operator +(Duration duration) {
+    return Date.from(toDateTime().add(duration));
+  }
 }
 
 class Week {
   List<Date> dates = [];
-  Week({this.dates});
-  Date first() {
-    return dates[0];
-  }
 
-  Date last() {
-    return dates[dates.length - 1];
-  }
+  Week({this.dates});
 
   add(Date date) {
     if (dates == null) dates = [];
@@ -45,6 +56,7 @@ class Week {
   }
 
   hasDate(Date date) {
-    return !first().isAfter(date) && !last().isBefore(date);
+    return dates.isNotEmpty && !dates.first.isAfter(date) &&
+        !dates.last.isBefore(date);
   }
 }
